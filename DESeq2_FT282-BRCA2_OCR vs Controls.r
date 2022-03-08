@@ -111,8 +111,9 @@ dn <- arrange(dn, padj)
 dn$label[1:10] <- dn$Symbol[1:10]
 
 # transfer label to the plotting obj
-aux$label[which(aux$Symbol %in% up$label[1:10])] <- up$label[1:10]
-aux$label[which(aux$Symbol %in% dn$label[1:10])] <- dn$label[1:10]
+aux$label <- NA
+aux[which(aux$Symbol %in% dn$label[1:10]),]$label <- aux[which(aux$Symbol %in% dn$label[1:10]),]$Symbol
+aux[which(aux$Symbol %in% up$label[1:10]),]$label <- aux[which(aux$Symbol %in% up$label[1:10]),]$Symbol
 
 
 pdf("Volcano_BRCA2_OCRvsControl.pdf", 15, 10)
@@ -139,9 +140,6 @@ resdata <- merge(as.data.frame(res), as.data.frame(counts(dds, normalized=TRUE))
 names(resdata)[1] <- "Gene"
 head(resdata)
 
-# Write results
-write.csv(aux, file="diffexpr-results_Control_vs_BRCA2.csv")
-
 # Examine plot of p-values
 hist(res$pvalue, breaks=50, col="grey")
 
@@ -162,3 +160,5 @@ png("diffexpr-maplot-2.png", 1500, 1000, pointsize=20)
 maplot(resdata, main="MA Plot between Control vs BRCA2 OCR1")
 dev.off()
 
+# Write results
+write.csv(aux, file="Differentially_expressed_genes_FT-Control_vsFT-BRCA2_OCR.csv")
